@@ -20,6 +20,7 @@
 #include "pin_defines_A0002.h"
 #include "main.h"
 #include "init.h"
+#include "zav_error.h"
 
 
 /*------------------------------------------------------------------------------
