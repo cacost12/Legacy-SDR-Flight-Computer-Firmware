@@ -165,6 +165,7 @@ GPIO_InitTypeDef GPIO_InitStruct = {0};
 /* GPIO Ports Clock Enable */
 #ifndef BLINK
 	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
 #endif
 __HAL_RCC_GPIOE_CLK_ENABLE();
 __HAL_RCC_GPIOH_CLK_ENABLE();
@@ -191,14 +192,24 @@ HAL_GPIO_Init( STATUS_GPIO_PORT, &GPIO_InitStruct );
 
 #ifndef BLINK
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(FLASH_SS_GPIO_PORT, FLASH_SS_PIN, GPIO_PIN_SET);
+	HAL_GPIO_WritePin( FLASH_SS_GPIO_PORT  , FLASH_SS_PIN  , GPIO_PIN_SET   );
+	HAL_GPIO_WritePin( FLASH_WP_GPIO_PORT  , FLASH_WP_PIN  , GPIO_PIN_RESET );
+	HAL_GPIO_WritePin( FLASH_HOLD_GPIO_PORT, FLASH_HOLD_PIN, GPIO_PIN_SET   );
 
-	/*Configure GPIO pin : FLASH_SS_Pin */
+	/* Configure GPIO pin : FLASH_SS_Pin */
 	GPIO_InitStruct.Pin   = FLASH_SS_PIN;
 	GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull  = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init( FLASH_SS_GPIO_PORT, &GPIO_InitStruct );
+
+	/* Configure GPIO pin : FLASH_WP_Pin */
+	GPIO_InitStruct.Pin   = FLASH_WP_PIN;
+	HAL_GPIO_Init( FLASH_WP_GPIO_PORT, &GPIO_InitStruct );
+
+	/* Configure GPIO pin : FLASH_HOLD_Pin */
+	GPIO_InitStruct.Pin   = FLASH_HOLD_PIN;
+	HAL_GPIO_Init( FLASH_HOLD_GPIO_PORT, &GPIO_InitStruct );
 #endif /* #ifndef BLINK */ 
 
 } /* GPIO_Init */

@@ -65,6 +65,10 @@ void Error_Handler(void);
 #define STATUS_G_GPIO_Port GPIOE
 #define FLASH_SS_Pin GPIO_PIN_12
 #define FLASH_SS_GPIO_Port GPIOB
+#define FLASH_WP_Pin GPIO_PIN_12
+#define FLASH_WP_GPIO_Port GPIOD
+#define FLASH_HOLD_Pin GPIO_PIN_13
+#define FLASH_HOLD_GPIO_Port GPIOD
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
