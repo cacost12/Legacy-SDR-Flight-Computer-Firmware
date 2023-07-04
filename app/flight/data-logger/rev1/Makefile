@@ -50,6 +50,7 @@ $(INIT_DIR)/init.c                                                    \
 $(UTIL_DIR)/zav_error.c                                               \
 $(MOD_DIR)/flash/flash.c                                              \
 $(MOD_DIR)/led/led.c                                                  \
+$(MOD_DIR)/usb/usb.c                                                  \
 $(INIT_DIR)/config/Src/stm32h7xx_it.c                                 \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                            \
 $(INIT_DIR)/config/Src/system_stm32h7xx.c                             \
@@ -129,7 +130,7 @@ C_DEFS =               \
 -DSTM32H750xx          \
 -DFULL_FLIGHT_COMPUTER \
 -DDATA_LOGGER          \
--DA0002_REV2
+-DA0002_REV1
 
 # AS includes
 AS_INCLUDES = 
@@ -143,6 +144,7 @@ C_INCLUDES =                                           \
 -I$(INIT_DIR)/config/Inc                               \
 -I$(MOD_DIR)/flash                                     \
 -I$(MOD_DIR)/led                                       \
+-I$(MOD_DIR)/usb                                       \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \

@@ -60,6 +60,9 @@ while( !__HAL_PWR_GET_FLAG( PWR_FLAG_VOSRDY ) )
 	{
 	}
 
+/* Macro to configure the PLL clock source */
+__HAL_RCC_PLL_PLLSOURCE_CONFIG( RCC_PLLSOURCE_HSE );
+
 /* Initializes the RCC Oscillators according to the specified parameters
   in the RCC_OscInitTypeDef structure */
 RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
@@ -164,7 +167,9 @@ GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 /* GPIO Ports Clock Enable */
 #ifndef BLINK
+	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOC_CLK_ENABLE();
 	__HAL_RCC_GPIOD_CLK_ENABLE();
 #endif
 __HAL_RCC_GPIOE_CLK_ENABLE();
@@ -212,7 +217,76 @@ HAL_GPIO_Init( STATUS_GPIO_PORT, &GPIO_InitStruct );
 	HAL_GPIO_Init( FLASH_HOLD_GPIO_PORT, &GPIO_InitStruct );
 #endif /* #ifndef BLINK */ 
 
+/*--------------------------- USB MCU PINS -----------------------------------*/
+
+#ifndef BLINK
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin( USB_RST_GPIO_PORT, USB_RST_PIN, GPIO_PIN_SET );
+
+	/*Configure GPIO pin : USB_DETECT_Pin */
+	GPIO_InitStruct.Pin  = USB_DETECT_PIN;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init( USB_DETECT_GPIO_PORT, &GPIO_InitStruct );
+
+	/*Configure GPIO pin : USB_SUSPEND_Pin */
+	GPIO_InitStruct.Pin  = USB_SUSPEND_PIN;
+	HAL_GPIO_Init( USB_SUSPEND_GPIO_PORT, &GPIO_InitStruct );
+
+	/*Configure GPIO pin : USB_RST_Pin */
+	GPIO_InitStruct.Pin   = USB_RST_PIN;
+	GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull  = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init( USB_RST_GPIO_PORT, &GPIO_InitStruct );
+#endif
+
 } /* GPIO_Init */
+
+
+/*******************************************************************************
+*                                                                              *
+* PROCEDURE:                                                                   *
+* 		USB_UART_Init                                                          *
+*                                                                              *
+* DESCRIPTION:                                                                 *
+* 		Initializes the UART peripheral for use with the USB interface         *
+*                                                                              *
+*******************************************************************************/
+void USB_UART_Init
+	(
+	void
+	)
+{
+usb_huart.Instance                    = USB_UART;
+usb_huart.Init.BaudRate               = 921600;
+usb_huart.Init.WordLength             = UART_WORDLENGTH_8B;
+usb_huart.Init.StopBits               = UART_STOPBITS_1;
+usb_huart.Init.Parity                 = UART_PARITY_NONE;
+usb_huart.Init.Mode                   = UART_MODE_TX_RX;
+usb_huart.Init.HwFlowCtl              = UART_HWCONTROL_NONE;
+usb_huart.Init.OverSampling           = UART_OVERSAMPLING_16;
+usb_huart.Init.OneBitSampling         = UART_ONE_BIT_SAMPLE_DISABLE;
+usb_huart.Init.ClockPrescaler         = UART_PRESCALER_DIV1;
+usb_huart.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+if ( HAL_UART_Init( &usb_huart ) != HAL_OK )
+	{
+	Error_Handler( ERROR_USB_UART_INIT_ERROR );
+	}
+if ( HAL_UARTEx_SetTxFifoThreshold( &usb_huart, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK )
+	{
+	Error_Handler( ERROR_USB_UART_INIT_ERROR );
+	}
+if ( HAL_UARTEx_SetRxFifoThreshold( &usb_huart, UART_RXFIFO_THRESHOLD_1_8 ) != HAL_OK )
+	{
+	Error_Handler( ERROR_USB_UART_INIT_ERROR );
+	}
+if ( HAL_UARTEx_DisableFifoMode( &usb_huart ) != HAL_OK )
+	{
+	Error_Handler( ERROR_USB_UART_INIT_ERROR );
+	}
+
+} /* USB_UART_Init */
 
 
 /*******************************************************************************

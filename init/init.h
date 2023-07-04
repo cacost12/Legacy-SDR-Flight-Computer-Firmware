@@ -35,6 +35,7 @@ extern "C" {
 void SystemClock_Config      ( void );      /* System clock config            */
 void Flash_SPI_Init          ( void );      /* External flash SPI config      */
 void GPIO_Init               ( void );      /* GPIO configs                   */
+void USB_UART_Init           ( void );      /* USB_UART                       */
 
 
 #ifdef __cplusplus
