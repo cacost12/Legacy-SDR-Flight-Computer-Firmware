@@ -243,7 +243,7 @@ HAL_GPIO_Init( STATUS_GPIO_PORT, &GPIO_InitStruct );
 
 } /* GPIO_Init */
 
-
+#ifndef BLINK
 /*******************************************************************************
 *                                                                              *
 * PROCEDURE:                                                                   *
@@ -287,6 +287,7 @@ if ( HAL_UARTEx_DisableFifoMode( &usb_huart ) != HAL_OK )
 	}
 
 } /* USB_UART_Init */
+#endif /* #ifndef BLINK */
 
 
 /*******************************************************************************

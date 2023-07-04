@@ -205,7 +205,7 @@ if( huart->Instance == USB_UART )
     HAL_GPIO_DeInit(USB_RX_GPIO_PORT, USB_RX_PIN | USB_TX_PIN );
     }
 
-}
+} /* HAL_UART_MspDeInit */
 
 
 /*******************************************************************************
