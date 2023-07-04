@@ -28,13 +28,13 @@ OPT = -Og
 BUILD_DIR = build
 
 # Library directory
-LIB_DIR = ../../../../lib
+LIB_DIR = ../../../lib
 
 # Module Directory
-MOD_DIR = ../../../../mod
+MOD_DIR = ../../../mod
 
 # MCU Initialization Directory
-INIT_DIR = ../../../../init
+INIT_DIR = ../../../init
 
 #Utilities directory
 UTIL_DIR = $(LIB_DIR)/util
