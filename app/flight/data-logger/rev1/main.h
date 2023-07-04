@@ -1,7 +1,7 @@
 /*******************************************************************************
 *
 * FILE: 
-* 		main.c
+* 		main.h
 *
 * DESCRIPTION: 
 * 		Processes commands recieved from a host PC, provides fine control over 
@@ -27,7 +27,7 @@ extern "C" {
 /*------------------------------------------------------------------------------
  Project Includes  
 ------------------------------------------------------------------------------*/
-#include "sensor.h"
+//#include "sensor.h"
 #include "flash.h"
 
 
@@ -40,7 +40,7 @@ extern "C" {
 #define DEF_FLASH_BUFFER_SIZE  ( 32  )     /* Default size of flash buffers   */
 
 /* Timeouts */
-#ifndef SDR_DEBUG
+#ifndef ZAV_DEBUG
 	#define HAL_DEFAULT_TIMEOUT    ( 10  ) /* Default timeout for polling 
 	                                          operations                     */
 	#define HAL_SENSOR_TIMEOUT     ( 40  ) /* Timeout for sensor polling      */
@@ -48,22 +48,18 @@ extern "C" {
 	/* Disable timeouts when debugging */
 	#define HAL_DEFAULT_TIMEOUT    ( 0xFFFFFFFF )  
 	#define HAL_SENSOR_TIMEOUT     ( 0xFFFFFFFF ) 
-#endif /* SDR_DEBUG */
+#endif /* ZAV_DEBUG */
 
+/* Sensor Data Frame Size */
+#if   defined( FULL_FLIGHT_COMPUTER )
+	#define SENSOR_FRAME_SIZE      ( 32 ) 
+#elif defined( BASE_FLIGHT_COMPUTER )
+	#define SENSOR_FRAME_SIZE      ( 12 )
+#endif
 
-/*------------------------------------------------------------------------------
- Exported function prototypes                                             
-------------------------------------------------------------------------------*/
-
-void HAL_TIM_MspPostInit
-	(
-	TIM_HandleTypeDef *htim
-	);
-
-void Error_Handler
-	(
-	void
-	);
+/* Launch detection parameters */
+#define LAUNCH_DETECT_THRESHOLD      ( 1000   ) /* 1kPa            */
+#define LAUNCH_DETECT_TIMEOUT        ( 120000 ) /* ms -> 2 minutes */
 
 
 /*------------------------------------------------------------------------------
@@ -71,12 +67,14 @@ void Error_Handler
 ------------------------------------------------------------------------------*/
 
 /* Store a frame of flight computer data in flash */
+/*
 FLASH_STATUS store_frame 
 	(
 	HFLASH_BUFFER* pflash_handle,
 	SENSOR_DATA*   sensor_data_ptr,
 	uint32_t       time
 	);
+*/
 
 
 #ifdef __cplusplus
@@ -84,3 +82,8 @@ FLASH_STATUS store_frame
 #endif
 
 #endif /* __MAIN_H */
+
+
+/*******************************************************************************
+* END OF FILE                                                                  *
+*******************************************************************************/

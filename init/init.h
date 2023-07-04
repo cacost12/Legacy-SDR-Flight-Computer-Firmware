@@ -32,8 +32,9 @@ extern "C" {
 /*------------------------------------------------------------------------------
  Function prototypes                                                          
 ------------------------------------------------------------------------------*/
-void SystemClock_Config      ( void );      /* clock configuration            */
-void GPIO_Init               ( void );      /* GPIO configurations            */
+void SystemClock_Config      ( void );      /* System clock config            */
+void Flash_SPI_Init          ( void );      /* External flash SPI config      */
+void GPIO_Init               ( void );      /* GPIO configs                   */
 
 
 #ifdef __cplusplus

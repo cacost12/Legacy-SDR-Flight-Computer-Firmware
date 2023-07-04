@@ -17,9 +17,9 @@
 /*------------------------------------------------------------------------------
  Project Includes                                                               
 ------------------------------------------------------------------------------*/
-#include "zav_pin_defines_A0002.h"
 #include "main.h"
 #include "init.h"
+#include "zav_pin_defines_A0002.h"
 #include "zav_error.h"
 
 
@@ -99,12 +99,59 @@ if ( HAL_RCC_ClockConfig( &RCC_ClkInitStruct, FLASH_LATENCY_2 ) != HAL_OK )
 } /* SystemClock_Config */
 
 
+#ifndef BLINK
 /*******************************************************************************
 *                                                                              *
 * PROCEDURE:                                                                   *
-* 		GPIO_Init                                                              * 
+* 		Flash_SPI_Init                                                         *
 *                                                                              *
-* DESCRIPTION:                                                                 * 
+* DESCRIPTION:                                                                 *
+* 		Initializes the SPI peripheral to be used with the external flash chip *
+*                                                                              *
+*******************************************************************************/
+void Flash_SPI_Init
+	(
+	void
+	)
+{
+/* SPI2 parameter configuration*/
+flash_hspi.Instance                        = FLASH_SPI;
+flash_hspi.Init.Mode                       = SPI_MODE_MASTER;
+flash_hspi.Init.Direction                  = SPI_DIRECTION_2LINES;
+flash_hspi.Init.DataSize                   = SPI_DATASIZE_8BIT;
+flash_hspi.Init.CLKPolarity                = SPI_POLARITY_LOW;
+flash_hspi.Init.CLKPhase                   = SPI_PHASE_1EDGE;
+flash_hspi.Init.NSS                        = SPI_NSS_SOFT;
+flash_hspi.Init.BaudRatePrescaler          = SPI_BAUDRATEPRESCALER_2;
+flash_hspi.Init.FirstBit                   = SPI_FIRSTBIT_MSB;
+flash_hspi.Init.TIMode                     = SPI_TIMODE_DISABLE;
+flash_hspi.Init.CRCCalculation             = SPI_CRCCALCULATION_DISABLE;
+flash_hspi.Init.CRCPolynomial              = 0x0;
+flash_hspi.Init.NSSPMode                   = SPI_NSS_PULSE_ENABLE;
+flash_hspi.Init.NSSPolarity                = SPI_NSS_POLARITY_LOW;
+flash_hspi.Init.FifoThreshold              = SPI_FIFO_THRESHOLD_01DATA;
+flash_hspi.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+flash_hspi.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+flash_hspi.Init.MasterSSIdleness           = SPI_MASTER_SS_IDLENESS_00CYCLE;
+flash_hspi.Init.MasterInterDataIdleness    = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+flash_hspi.Init.MasterReceiverAutoSusp     = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+flash_hspi.Init.MasterKeepIOState          = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+flash_hspi.Init.IOSwap                     = SPI_IO_SWAP_DISABLE;
+if ( HAL_SPI_Init( &flash_hspi ) != HAL_OK )
+	{
+	Error_Handler( ERROR_FLASH_SPI_INIT_ERROR );
+	}
+
+} /* Flash_SPI_Init */
+#endif /* #ifndef BLINK */
+
+
+/*******************************************************************************
+*                                                                              *
+* PROCEDURE:                                                                   *
+* 		GPIO_Init                                                              *
+*                                                                              *
+* DESCRIPTION:                                                                 *
 * 		Initializes all GPIO pins and sets alternate functions                 *
 *                                                                              *
 *******************************************************************************/
@@ -116,8 +163,11 @@ void GPIO_Init
 GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 /* GPIO Ports Clock Enable */
-__HAL_RCC_GPIOH_CLK_ENABLE();
+#ifndef BLINK
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+#endif
 __HAL_RCC_GPIOE_CLK_ENABLE();
+__HAL_RCC_GPIOH_CLK_ENABLE();
 
 /*--------------------------- LED MCU PINS -----------------------------------*/
 
@@ -136,6 +186,20 @@ GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_OD;
 GPIO_InitStruct.Pull  = GPIO_NOPULL;                  
 GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;         
 HAL_GPIO_Init( STATUS_GPIO_PORT, &GPIO_InitStruct );
+
+/*-------------------------- FLASH MCU PINS ----------------------------------*/
+
+#ifndef BLINK
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(FLASH_SS_GPIO_PORT, FLASH_SS_PIN, GPIO_PIN_SET);
+
+	/*Configure GPIO pin : FLASH_SS_Pin */
+	GPIO_InitStruct.Pin   = FLASH_SS_PIN;
+	GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull  = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init( FLASH_SS_GPIO_PORT, &GPIO_InitStruct );
+#endif /* #ifndef BLINK */ 
 
 } /* GPIO_Init */
 
