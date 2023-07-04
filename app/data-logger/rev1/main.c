@@ -27,9 +27,8 @@
 #include "init.h"
 
 /* Low-level modules */
-/*
 #include "baro.h"
-#include "buzzer.h"
+/*
 #include "commands.h"
 */
 #include "flash.h"
@@ -47,7 +46,7 @@
 /*------------------------------------------------------------------------------
  MCU Peripheral Handles                                                         
 ------------------------------------------------------------------------------*/
-// I2C_HandleTypeDef  hi2c1;   /* Baro sensor    */
+I2C_HandleTypeDef  baro_hi2c;    /* Baro sensor    */
 //I2C_HandleTypeDef  hi2c2;   /* IMU and GPS    */
 SPI_HandleTypeDef  flash_hspi;   /* External flash */
 UART_HandleTypeDef usb_huart;    /* USB            */
@@ -77,8 +76,8 @@ uint8_t       flash_buffer[ DEF_FLASH_BUFFER_SIZE ]; /* Flash Data buffer     */
 
 /* Sensors */
 //SENSOR_DATA   sensor_data;                     /* All sensor data             */
-//BARO_STATUS   baro_status;                     /* Status of baro sensor       */
-//BARO_CONFIG   baro_configs;                    /* Baro sensor config settings */
+BARO_STATUS   baro_status;                     /* Status of baro sensor       */
+BARO_CONFIG   baro_configs;                    /* Baro sensor config settings */
 //IMU_STATUS    imu_status;                      /* IMU return codes            */
 //IMU_CONFIG    imu_configs;                     /* IMU config settings         */
 //SENSOR_STATUS sensor_status;                   /* Sensor module return codes  */
@@ -109,14 +108,13 @@ flash_handle.bpl_bits          = FLASH_BPL_NONE;
 flash_handle.bpl_write_protect = FLASH_BPL_READ_WRITE;
 
 /* Baro sensor configurations */
-/*
 baro_configs.enable            = BARO_PRESS_TEMP_ENABLED;
 baro_configs.mode              = BARO_NORMAL_MODE;
 baro_configs.press_OSR_setting = BARO_PRESS_OSR_X8;
 baro_configs.temp_OSR_setting  = BARO_TEMP_OSR_X1;
 baro_configs.ODR_setting       = BARO_ODR_50HZ;
 baro_configs.IIR_setting       = BARO_IIR_COEF_0;
-*/
+
 
 /* IMU Configurations */
 /*
@@ -137,8 +135,8 @@ imu_configs.mag_xy_repititions = 9; */ /* BMM150 Regular Preset Recomendation */
 /* Module return codes */
 /*
 usb_rx_data                   = USB_OK;
-baro_status                   = BARO_OK;
 */
+baro_status                   = BARO_OK;
 flash_status                  = FLASH_OK;
 //sensor_status                 = SENSOR_OK;
 
@@ -154,7 +152,7 @@ HAL_Init                (); /* Reset peripherals, initialize flash interface
 SystemClock_Config      (); /* System clock                                   */
 GPIO_Init               (); /* GPIO                                           */
 USB_UART_Init           (); /* USB UART                                       */
-//Baro_I2C_Init           (); /* Barometric pressure sensor                     */
+Baro_I2C_Init           (); /* Barometric pressure sensor                     */
 //IMU_GPS_I2C_Init        (); /* IMU and GPS                                    */
 Flash_SPI_Init          (); /* External flash chip                            */
 
@@ -171,13 +169,11 @@ if ( flash_status != FLASH_OK )
 	}
 
 /* Barometric pressure sensor */
-/*
 baro_status = baro_init( &baro_configs );
 if ( baro_status != BARO_OK )
 	{
 	Error_Handler( ERROR_BARO_INIT_ERROR );
 	}
-*/
 
 /* IMU */
 /*

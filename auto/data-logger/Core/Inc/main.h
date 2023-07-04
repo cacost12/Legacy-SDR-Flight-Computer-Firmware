@@ -79,6 +79,10 @@ void Error_Handler(void);
 #define USB_SUSPEND_GPIO_Port GPIOA
 #define USB_RST_Pin GPIO_PIN_12
 #define USB_RST_GPIO_Port GPIOA
+#define BP_SCL_Pin GPIO_PIN_6
+#define BP_SCL_GPIO_Port GPIOB
+#define BP_SDA_Pin GPIO_PIN_7
+#define BP_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

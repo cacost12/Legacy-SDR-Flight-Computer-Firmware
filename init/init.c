@@ -35,10 +35,10 @@
 
 /*******************************************************************************
 *                                                                              *
-* PROCEDURE:                                                                   * 
+* PROCEDURE:                                                                   *
 * 		SystemClock_Config                                                     *
 *                                                                              *
-* DESCRIPTION:                                                                 * 
+* DESCRIPTION:                                                                 *
 * 		Initializes the microcontroller clock. Enables peripheral clocks and   *
 *       sets prescalers                                                        *
 *                                                                              *
@@ -103,6 +103,50 @@ if ( HAL_RCC_ClockConfig( &RCC_ClkInitStruct, FLASH_LATENCY_2 ) != HAL_OK )
 
 
 #ifndef BLINK
+/*******************************************************************************
+*                                                                              *
+* PROCEDURE:                                                                   *
+* 		Baro_I2C_Init                                                          *
+*                                                                              *
+* DESCRIPTION:                                                                 *
+* 		Initializes the barometric pressure sensor's I2C MCU interface         *
+*                                                                              *
+*******************************************************************************/
+void Baro_I2C_Init
+	(
+	void
+	)
+{
+baro_hi2c.Instance              = BARO_I2C;
+baro_hi2c.Init.Timing           = 0x20303E5D;
+baro_hi2c.Init.OwnAddress1      = 0;
+baro_hi2c.Init.AddressingMode   = I2C_ADDRESSINGMODE_7BIT;
+baro_hi2c.Init.DualAddressMode  = I2C_DUALADDRESS_DISABLE;
+baro_hi2c.Init.OwnAddress2      = 0;
+baro_hi2c.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+baro_hi2c.Init.GeneralCallMode  = I2C_GENERALCALL_DISABLE;
+baro_hi2c.Init.NoStretchMode    = I2C_NOSTRETCH_DISABLE;
+
+if ( HAL_I2C_Init( &baro_hi2c ) != HAL_OK )
+	{
+	Error_Handler( ERROR_BARO_I2C_INIT_ERROR );
+	}
+
+/* Configure Analogue filter */
+if ( HAL_I2CEx_ConfigAnalogFilter( &baro_hi2c, I2C_ANALOGFILTER_ENABLE ) != HAL_OK )
+	{
+	Error_Handler( ERROR_BARO_I2C_INIT_ERROR );
+	}
+
+/* Configure Digital filter */
+if ( HAL_I2CEx_ConfigDigitalFilter( &baro_hi2c, 0 ) != HAL_OK )
+	{
+	Error_Handler( ERROR_BARO_I2C_INIT_ERROR );
+	}
+
+} /* Baro_I2C_Init */
+
+
 /*******************************************************************************
 *                                                                              *
 * PROCEDURE:                                                                   *

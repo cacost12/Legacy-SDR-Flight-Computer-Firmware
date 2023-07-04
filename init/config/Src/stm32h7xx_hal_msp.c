@@ -44,6 +44,90 @@ __HAL_RCC_SYSCFG_CLK_ENABLE();
 /*******************************************************************************
 *                                                                              *
 * PROCEDURE:                                                                   *
+*       HAL_I2C_MspInit                                                        *
+*                                                                              *
+* DESCRIPTION:                                                                 *
+*       Initializes the I2C MSP                                                *
+*                                                                              *
+*******************************************************************************/
+void HAL_I2C_MspInit
+    (
+    I2C_HandleTypeDef* hi2c
+    )
+{
+GPIO_InitTypeDef         GPIO_InitStruct     = {0};
+RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+/* Barometric Pressure Sensor I2C */
+if( hi2c->Instance == BARO_I2C )
+    {
+    /* Initializes the peripherals clock */
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
+    PeriphClkInitStruct.PLL3.PLL3M           = 2;
+    PeriphClkInitStruct.PLL3.PLL3N           = 16;
+    PeriphClkInitStruct.PLL3.PLL3P           = 2;
+    PeriphClkInitStruct.PLL3.PLL3Q           = 2;
+    PeriphClkInitStruct.PLL3.PLL3R           = 4;
+    PeriphClkInitStruct.PLL3.PLL3RGE         = RCC_PLL3VCIRANGE_3;
+    PeriphClkInitStruct.PLL3.PLL3VCOSEL      = RCC_PLL3VCOWIDE;
+    PeriphClkInitStruct.PLL3.PLL3FRACN       = 0;
+    PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_PLL3;
+    if ( HAL_RCCEx_PeriphCLKConfig( &PeriphClkInitStruct ) != HAL_OK )
+        {
+        Error_Handler( ERROR_I2C_HAL_MSP_ERROR );
+        }
+
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+
+    /* I2C1 GPIO Configuration
+    PB6     ------> I2C1_SCL
+    PB7     ------> I2C1_SDA */
+    GPIO_InitStruct.Pin       = BARO_SCL_PIN | BARO_SDA_PIN;
+    GPIO_InitStruct.Mode      = GPIO_MODE_AF_OD;
+    GPIO_InitStruct.Pull      = GPIO_NOPULL;
+    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
+    HAL_GPIO_Init( BARO_SCL_GPIO_PORT, &GPIO_InitStruct);
+
+    /* Peripheral clock enable */
+    __HAL_RCC_I2C1_CLK_ENABLE();
+    }
+
+} /* HAL_I2C_MspInit */
+
+
+/*******************************************************************************
+*                                                                              *
+* PROCEDURE:                                                                   *
+*       HAL_I2C_MspDeInit                                                      *
+*                                                                              *
+* DESCRIPTION:                                                                 *
+*       Deinitializes the I2C MSP                                              *
+*                                                                              *
+*******************************************************************************/
+void HAL_I2C_MspDeInit
+    (
+    I2C_HandleTypeDef* hi2c
+    )
+{
+if(hi2c->Instance==I2C1)
+    {
+    /* Peripheral clock disable */
+    __HAL_RCC_I2C1_CLK_DISABLE();
+
+    /* I2C1 GPIO Configuration
+    PB6     ------> I2C1_SCL
+    PB7     ------> I2C1_SDA */
+    HAL_GPIO_DeInit( BARO_SCL_GPIO_PORT, BARO_SCL_PIN );
+    HAL_GPIO_DeInit( BARO_SDA_GPIO_PORT, BARO_SDA_PIN );
+    }
+
+} /* HAL_I2C_MspDeInit */
+
+
+/*******************************************************************************
+*                                                                              *
+* PROCEDURE:                                                                   *
 *       HAL_SPI_MspInit                                                        *
 *                                                                              *
 * DESCRIPTION:                                                                 *
