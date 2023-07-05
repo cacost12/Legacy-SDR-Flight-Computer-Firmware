@@ -318,7 +318,7 @@ HAL_GPIO_Init( STATUS_GPIO_PORT, &GPIO_InitStruct );
 /*-------------------------- FLASH MCU PINS ----------------------------------*/
 
 #ifndef BLINK
-	/*Configure GPIO pin Output Level */
+	/* Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin( FLASH_SS_GPIO_PORT  , FLASH_SS_PIN  , GPIO_PIN_SET   );
 	HAL_GPIO_WritePin( FLASH_WP_GPIO_PORT  , FLASH_WP_PIN  , GPIO_PIN_RESET );
 	HAL_GPIO_WritePin( FLASH_HOLD_GPIO_PORT, FLASH_HOLD_PIN, GPIO_PIN_SET   );
@@ -339,10 +339,44 @@ HAL_GPIO_Init( STATUS_GPIO_PORT, &GPIO_InitStruct );
 	HAL_GPIO_Init( FLASH_HOLD_GPIO_PORT, &GPIO_InitStruct );
 #endif /* #ifndef BLINK */ 
 
+/*------------------------- IGNITION MCU PINS --------------------------------*/
+#ifndef BLINK
+	/* Configure GPIO pin Output level */
+	HAL_GPIO_WritePin( MAIN_GPIO_PORT  , MAIN_PIN  , GPIO_PIN_RESET );
+	HAL_GPIO_WritePin( DROGUE_GPIO_PORT, DROGUE_PIN, GPIO_PIN_RESET );
+	HAL_GPIO_WritePin( AUX1_GPIO_PORT  , AUX1_PIN  , GPIO_PIN_RESET );
+	HAL_GPIO_WritePin( AUX2_GPIO_PORT  , AUX2_PIN  , GPIO_PIN_RESET );
+
+	/* Configure GPIO pin : AUX2_CONT_Pin */
+	GPIO_InitStruct.Pin  = AUX2_CONT_PIN;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(AUX2_CONT_GPIO_PORT, &GPIO_InitStruct);
+
+	/* Configure GPIO pins : AUX2_Pin AUX1_Pin MAIN_Pin DROGUE_Pin */
+	GPIO_InitStruct.Pin   = AUX2_PIN | AUX1_PIN | MAIN_PIN | DROGUE_PIN;
+	GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull  = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init( MAIN_GPIO_PORT, &GPIO_InitStruct );
+
+	/* Configure GPIO pins : SWITCH_Pin AUX1_CONT_Pin DROGUE_CONT_Pin */
+	GPIO_InitStruct.Pin  = SWITCH_PIN | AUX1_CONT_PIN | DROGUE_CONT_PIN;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init( SWITCH_GPIO_PORT, &GPIO_InitStruct );
+
+	/* Configure GPIO pins : MAIN_CONT_Pin */
+	GPIO_InitStruct.Pin  = MAIN_CONT_PIN;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init( MAIN_CONT_GPIO_PORT, &GPIO_InitStruct );
+#endif /* #ifndef BLINK */
+
 /*--------------------------- USB MCU PINS -----------------------------------*/
 
 #ifndef BLINK
-	/*Configure GPIO pin Output Level */
+	/* Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin( USB_RST_GPIO_PORT, USB_RST_PIN, GPIO_PIN_SET );
 
 	/*Configure GPIO pin : USB_DETECT_Pin */

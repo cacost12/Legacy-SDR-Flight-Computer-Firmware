@@ -400,12 +400,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, AUX2_Pin|AUX1_Pin|MAIN_Pin|DROGUE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, STATUS_R_Pin|STATUS_B_Pin|STATUS_G_Pin, GPIO_PIN_SET);
@@ -421,6 +424,31 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_RST_GPIO_Port, USB_RST_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin : AUX2_CONT_Pin */
+  GPIO_InitStruct.Pin = AUX2_CONT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(AUX2_CONT_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : AUX2_Pin AUX1_Pin MAIN_Pin DROGUE_Pin */
+  GPIO_InitStruct.Pin = AUX2_Pin|AUX1_Pin|MAIN_Pin|DROGUE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : SWITCH_Pin AUX1_CONT_Pin DROGUE_CONT_Pin */
+  GPIO_InitStruct.Pin = SWITCH_Pin|AUX1_CONT_Pin|DROGUE_CONT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : MAIN_CONT_Pin USB_SUSPEND_Pin */
+  GPIO_InitStruct.Pin = MAIN_CONT_Pin|USB_SUSPEND_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : STATUS_R_Pin STATUS_B_Pin STATUS_G_Pin */
   GPIO_InitStruct.Pin = STATUS_R_Pin|STATUS_B_Pin|STATUS_G_Pin;
@@ -448,12 +476,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : USB_SUSPEND_Pin */
-  GPIO_InitStruct.Pin = USB_SUSPEND_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(USB_SUSPEND_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : USB_RST_Pin */
   GPIO_InitStruct.Pin = USB_RST_Pin;

@@ -32,9 +32,7 @@
 #include "commands.h"
 */
 #include "flash.h"
-/*
 #include "ignition.h"
-*/
 #include "imu.h"
 #include "led.h"
 /*
@@ -188,7 +186,6 @@ if ( imu_status != IMU_OK )
 ------------------------------------------------------------------------------*/
 
 /* Check switch pin */
-/*
 if ( ign_switch_cont() )
 	{
 	Error_Handler( ERROR_DATA_HAZARD_ERROR );
@@ -197,7 +194,6 @@ else
 	{
 	led_set_color( LED_GREEN );
  	}
-*/
 
 
 /*------------------------------------------------------------------------------

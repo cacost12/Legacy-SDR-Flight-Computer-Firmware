@@ -57,6 +57,24 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define AUX2_CONT_Pin GPIO_PIN_6
+#define AUX2_CONT_GPIO_Port GPIOE
+#define AUX2_Pin GPIO_PIN_13
+#define AUX2_GPIO_Port GPIOC
+#define AUX1_Pin GPIO_PIN_14
+#define AUX1_GPIO_Port GPIOC
+#define SWITCH_Pin GPIO_PIN_15
+#define SWITCH_GPIO_Port GPIOC
+#define AUX1_CONT_Pin GPIO_PIN_0
+#define AUX1_CONT_GPIO_Port GPIOC
+#define MAIN_Pin GPIO_PIN_1
+#define MAIN_GPIO_Port GPIOC
+#define DROGUE_Pin GPIO_PIN_2
+#define DROGUE_GPIO_Port GPIOC
+#define DROGUE_CONT_Pin GPIO_PIN_3
+#define DROGUE_CONT_GPIO_Port GPIOC
+#define MAIN_CONT_Pin GPIO_PIN_0
+#define MAIN_CONT_GPIO_Port GPIOA
 #define STATUS_R_Pin GPIO_PIN_9
 #define STATUS_R_GPIO_Port GPIOE
 #define STATUS_B_Pin GPIO_PIN_11
