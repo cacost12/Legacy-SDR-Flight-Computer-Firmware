@@ -34,8 +34,8 @@
 #include "flash.h"
 /*
 #include "ignition.h"
-#include "imu.h"
 */
+#include "imu.h"
 #include "led.h"
 /*
 #include "sensor.h"
@@ -47,7 +47,7 @@
  MCU Peripheral Handles                                                         
 ------------------------------------------------------------------------------*/
 I2C_HandleTypeDef  baro_hi2c;    /* Baro sensor    */
-//I2C_HandleTypeDef  hi2c2;   /* IMU and GPS    */
+I2C_HandleTypeDef  imu_hi2c;     /* IMU            */
 SPI_HandleTypeDef  flash_hspi;   /* External flash */
 UART_HandleTypeDef usb_huart;    /* USB            */
 
@@ -78,8 +78,8 @@ uint8_t       flash_buffer[ DEF_FLASH_BUFFER_SIZE ]; /* Flash Data buffer     */
 //SENSOR_DATA   sensor_data;                     /* All sensor data             */
 BARO_STATUS   baro_status;                     /* Status of baro sensor       */
 BARO_CONFIG   baro_configs;                    /* Baro sensor config settings */
-//IMU_STATUS    imu_status;                      /* IMU return codes            */
-//IMU_CONFIG    imu_configs;                     /* IMU config settings         */
+IMU_STATUS    imu_status;                      /* IMU return codes            */
+IMU_CONFIG    imu_configs;                     /* IMU config settings         */
 //SENSOR_STATUS sensor_status;                   /* Sensor module return codes  */
 
 /* Time */
@@ -117,7 +117,6 @@ baro_configs.IIR_setting       = BARO_IIR_COEF_0;
 
 
 /* IMU Configurations */
-/*
 imu_configs.sensor_enable      = IMU_ENABLE_GYRO_ACC_TEMP;
 imu_configs.acc_odr            = IMU_ODR_100;
 imu_configs.gyro_odr           = IMU_ODR_100;
@@ -129,8 +128,8 @@ imu_configs.gyro_filter_mode   = IMU_FILTER_FILTER_MODE;
 imu_configs.acc_range          = IMU_ACC_RANGE_16G;
 imu_configs.gyro_range         = IMU_GYRO_RANGE_500;
 imu_configs.mag_op_mode        = MAG_NORMAL_MODE;
-imu_configs.mag_xy_repititions = 9; */ /* BMM150 Regular Preset Recomendation */
-//imu_configs.mag_z_repititions  = 15;
+imu_configs.mag_xy_repititions = 9; /* BMM150 Regular Preset Recomendation */
+imu_configs.mag_z_repititions  = 15;
 
 /* Module return codes */
 /*
@@ -138,6 +137,7 @@ usb_rx_data                   = USB_OK;
 */
 baro_status                   = BARO_OK;
 flash_status                  = FLASH_OK;
+imu_status                    = IMU_OK;
 //sensor_status                 = SENSOR_OK;
 
 /* General Board configuration */
@@ -153,7 +153,7 @@ SystemClock_Config      (); /* System clock                                   */
 GPIO_Init               (); /* GPIO                                           */
 USB_UART_Init           (); /* USB UART                                       */
 Baro_I2C_Init           (); /* Barometric pressure sensor                     */
-//IMU_GPS_I2C_Init        (); /* IMU and GPS                                    */
+IMU_I2C_Init            (); /* IMU                                            */
 Flash_SPI_Init          (); /* External flash chip                            */
 
 
@@ -176,13 +176,11 @@ if ( baro_status != BARO_OK )
 	}
 
 /* IMU */
-/*
 imu_status = imu_init( &imu_configs );
 if ( imu_status != IMU_OK )
 	{
 	Error_Handler( ERROR_IMU_INIT_ERROR );
 	}
-*/
 
 
 /*------------------------------------------------------------------------------

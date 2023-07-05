@@ -32,11 +32,15 @@ extern "C" {
 /*------------------------------------------------------------------------------
  Function prototypes                                                          
 ------------------------------------------------------------------------------*/
-void SystemClock_Config      ( void );      /* System clock config            */
-void Baro_I2C_Init           ( void );      /* Baro Sensor I2C config         */
-void Flash_SPI_Init          ( void );      /* External flash SPI config      */
-void GPIO_Init               ( void );      /* GPIO configs                   */
-void USB_UART_Init           ( void );      /* USB_UART                       */
+void SystemClock_Config      ( void );    /* System clock config              */
+void PeriphCommonClock_Config( void );    /* Common peripheral clock config   */
+void Baro_I2C_Init           ( void );    /* Baro Sensor I2C config           */
+#ifdef FULL_FLIGHT_COMPUTER
+    void IMU_I2C_Init            ( void ); /* IMU I2C config                  */
+#endif
+void Flash_SPI_Init          ( void );    /* External flash SPI config        */
+void GPIO_Init               ( void );    /* GPIO configs                     */
+void USB_UART_Init           ( void );    /* USB_UART                         */
 
 
 #ifdef __cplusplus

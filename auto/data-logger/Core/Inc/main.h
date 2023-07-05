@@ -63,6 +63,10 @@ void Error_Handler(void);
 #define STATUS_B_GPIO_Port GPIOE
 #define STATUS_G_Pin GPIO_PIN_13
 #define STATUS_G_GPIO_Port GPIOE
+#define IMU_SCL_Pin GPIO_PIN_10
+#define IMU_SCL_GPIO_Port GPIOB
+#define IMU_SDA_Pin GPIO_PIN_11
+#define IMU_SDA_GPIO_Port GPIOB
 #define FLASH_SS_Pin GPIO_PIN_12
 #define FLASH_SS_GPIO_Port GPIOB
 #define USB_DETECT_Pin GPIO_PIN_10

@@ -56,27 +56,10 @@ void HAL_I2C_MspInit
     )
 {
 GPIO_InitTypeDef         GPIO_InitStruct     = {0};
-RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
 /* Barometric Pressure Sensor I2C */
 if( hi2c->Instance == BARO_I2C )
     {
-    /* Initializes the peripherals clock */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
-    PeriphClkInitStruct.PLL3.PLL3M           = 2;
-    PeriphClkInitStruct.PLL3.PLL3N           = 16;
-    PeriphClkInitStruct.PLL3.PLL3P           = 2;
-    PeriphClkInitStruct.PLL3.PLL3Q           = 2;
-    PeriphClkInitStruct.PLL3.PLL3R           = 4;
-    PeriphClkInitStruct.PLL3.PLL3RGE         = RCC_PLL3VCIRANGE_3;
-    PeriphClkInitStruct.PLL3.PLL3VCOSEL      = RCC_PLL3VCOWIDE;
-    PeriphClkInitStruct.PLL3.PLL3FRACN       = 0;
-    PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_PLL3;
-    if ( HAL_RCCEx_PeriphCLKConfig( &PeriphClkInitStruct ) != HAL_OK )
-        {
-        Error_Handler( ERROR_I2C_HAL_MSP_ERROR );
-        }
-
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
     /* I2C1 GPIO Configuration
@@ -92,6 +75,27 @@ if( hi2c->Instance == BARO_I2C )
     /* Peripheral clock enable */
     __HAL_RCC_I2C1_CLK_ENABLE();
     }
+
+#ifdef FULL_FLIGHT_COMPUTER
+/* IMU I2C */
+else if( hi2c->Instance == IMU_I2C )
+    {
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+
+    /* I2C2 GPIO Configuration
+    PB10     ------> I2C2_SCL
+    PB11     ------> I2C2_SDA */
+    GPIO_InitStruct.Pin       = IMU_SCL_PIN | IMU_SDA_PIN;
+    GPIO_InitStruct.Mode      = GPIO_MODE_AF_OD;
+    GPIO_InitStruct.Pull      = GPIO_NOPULL;
+    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF4_I2C2;
+    HAL_GPIO_Init( IMU_SCL_GPIO_PORT, &GPIO_InitStruct );
+
+    /* Peripheral clock enable */
+    __HAL_RCC_I2C2_CLK_ENABLE();
+    }
+#endif /* #ifdef FULL_FLIGHT_COMPUTER */
 
 } /* HAL_I2C_MspInit */
 
@@ -110,7 +114,9 @@ void HAL_I2C_MspDeInit
     I2C_HandleTypeDef* hi2c
     )
 {
-if(hi2c->Instance==I2C1)
+
+/* Barometric pressure sensor I2C */
+if( hi2c->Instance == BARO_I2C )
     {
     /* Peripheral clock disable */
     __HAL_RCC_I2C1_CLK_DISABLE();
@@ -121,6 +127,21 @@ if(hi2c->Instance==I2C1)
     HAL_GPIO_DeInit( BARO_SCL_GPIO_PORT, BARO_SCL_PIN );
     HAL_GPIO_DeInit( BARO_SDA_GPIO_PORT, BARO_SDA_PIN );
     }
+
+#ifdef FULL_FLIGHT_COMPUTER
+/* IMU I2C */
+else if( hi2c->Instance == IMU_I2C )
+    {
+    /* Peripheral clock disable */
+    __HAL_RCC_I2C2_CLK_DISABLE();
+
+    /* I2C2 GPIO Configuration
+    PB10     ------> I2C2_SCL
+    PB11     ------> I2C2_SDA */
+    HAL_GPIO_DeInit( IMU_SCL_GPIO_PORT, IMU_SCL_PIN );
+    HAL_GPIO_DeInit( IMU_SDA_GPIO_PORT, IMU_SDA_PIN );
+    }
+#endif /* #ifdef FULL_FLIGHT_COMPUTER */
 
 } /* HAL_I2C_MspDeInit */
 

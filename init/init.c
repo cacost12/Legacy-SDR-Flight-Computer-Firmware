@@ -106,6 +106,40 @@ if ( HAL_RCC_ClockConfig( &RCC_ClkInitStruct, FLASH_LATENCY_2 ) != HAL_OK )
 /*******************************************************************************
 *                                                                              *
 * PROCEDURE:                                                                   *
+* 		PeriphCommonClock_Config                                               *
+*                                                                              *
+* DESCRIPTION:                                                                 *
+* 		Initializes microcontroller clocks shared amongst several peripherals  *
+*                                                                              *
+*******************************************************************************/
+void PeriphCommonClock_Config
+	(
+	void
+	)
+{
+RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+/* Initializes the peripherals clock */
+PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2C2 | RCC_PERIPHCLK_I2C1;
+PeriphClkInitStruct.PLL3.PLL3M           = 2;
+PeriphClkInitStruct.PLL3.PLL3N           = 16;
+PeriphClkInitStruct.PLL3.PLL3P           = 2;
+PeriphClkInitStruct.PLL3.PLL3Q           = 2;
+PeriphClkInitStruct.PLL3.PLL3R           = 4;
+PeriphClkInitStruct.PLL3.PLL3RGE         = RCC_PLL3VCIRANGE_3;
+PeriphClkInitStruct.PLL3.PLL3VCOSEL      = RCC_PLL3VCOWIDE;
+PeriphClkInitStruct.PLL3.PLL3FRACN       = 0;
+PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_PLL3;
+if ( HAL_RCCEx_PeriphCLKConfig( &PeriphClkInitStruct ) != HAL_OK )
+	{
+	Error_Handler( ERROR_COMMON_CLOCK_CONFIG_ERROR );
+	}
+} /* PeriphCommonClock_Config */
+
+
+/*******************************************************************************
+*                                                                              *
+* PROCEDURE:                                                                   *
 * 		Baro_I2C_Init                                                          *
 *                                                                              *
 * DESCRIPTION:                                                                 *
@@ -145,6 +179,50 @@ if ( HAL_I2CEx_ConfigDigitalFilter( &baro_hi2c, 0 ) != HAL_OK )
 	}
 
 } /* Baro_I2C_Init */
+
+#ifdef FULL_FLIGHT_COMPUTER
+/*******************************************************************************
+*                                                                              *
+* PROCEDURE:                                                                   *
+* 		IMU_I2C_Init                                                           *
+*                                                                              *
+* DESCRIPTION:                                                                 *
+* 		Initializes the IMU's I2C MCU interface                                *
+*                                                                              *
+*******************************************************************************/
+void IMU_I2C_Init
+	(
+	void
+	)
+{
+imu_hi2c.Instance              = IMU_I2C;
+imu_hi2c.Init.Timing           = 0x20303E5D;
+imu_hi2c.Init.OwnAddress1      = 0;
+imu_hi2c.Init.AddressingMode   = I2C_ADDRESSINGMODE_7BIT;
+imu_hi2c.Init.DualAddressMode  = I2C_DUALADDRESS_DISABLE;
+imu_hi2c.Init.OwnAddress2      = 0;
+imu_hi2c.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+imu_hi2c.Init.GeneralCallMode  = I2C_GENERALCALL_DISABLE;
+imu_hi2c.Init.NoStretchMode    = I2C_NOSTRETCH_DISABLE;
+if ( HAL_I2C_Init( &imu_hi2c ) != HAL_OK )
+	{
+	Error_Handler( ERROR_IMU_I2C_INIT_ERROR );
+	}
+
+/* Configure Analogue filter */
+if ( HAL_I2CEx_ConfigAnalogFilter( &imu_hi2c, I2C_ANALOGFILTER_ENABLE ) != HAL_OK )
+	{
+	Error_Handler( ERROR_IMU_I2C_INIT_ERROR );
+	}
+
+/* Configure Digital filter */
+if ( HAL_I2CEx_ConfigDigitalFilter( &imu_hi2c, 0 ) != HAL_OK )
+	{
+	Error_Handler( ERROR_IMU_I2C_INIT_ERROR );
+	}
+
+} /* IMU_I2C_Init */
+#endif /* #ifdef FULL_FLIGHT_COMPUTER */
 
 
 /*******************************************************************************
