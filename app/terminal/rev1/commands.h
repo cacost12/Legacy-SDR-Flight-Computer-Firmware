@@ -40,15 +40,18 @@ extern "C" {
 /* Return response codes */
 typedef enum _COMMAND_STATUS 
     {
-    COMMAND_OK               , /* Terminal command successful        */
-    COMMAND_SENSOR_ERROR     , /* Terminal sensor command error      */
-    COMMAND_IGN_ERROR        , /* Terminal ignition command error    */
-    COMMAND_FLASH_ERROR      , /* Terminal flash command error       */
-    COMMAND_UNRECOGNIZED_CMD , /* Terminal invalid command           */
-    COMMAND_DUAL_DEPLOY_ERROR, /* Terminal dual deploy command error */
-    COMMAND_DATA_LOG_ERROR   , /* Data logger error                  */
-    COMMAND_USB_ERROR        , /* USB communication error            */
-    COMMAND_UNKNOWN_ERROR    , /* Unknown error occured              */
+    COMMAND_OK                     , /* Terminal command successful        */
+    COMMAND_SENSOR_ERROR           , /* Terminal sensor command error      */
+    COMMAND_IGN_ERROR              , /* Terminal ignition command error    */
+    COMMAND_FLASH_ERROR            , /* Terminal flash command error       */
+    COMMAND_FLASH_READ_ERROR       , /* Error reading from external flash  */
+    COMMAND_FLASH_WRITE_ERROR      , /* Error writing to flash             */
+    COMMAND_UNRECOGNIZED_CMD       , /* Terminal invalid command           */
+    COMMAND_UNRECOGNIZED_SUBCOMMAND, /* Unknown subcommand                 */
+    COMMAND_DUAL_DEPLOY_ERROR      , /* Terminal dual deploy command error */
+    COMMAND_DATA_LOG_ERROR         , /* Data logger error                  */
+    COMMAND_USB_ERROR              , /* USB communication error            */
+    COMMAND_UNKNOWN_ERROR          , /* Unknown error occured              */
     COMMAND_ERROR        
     } COMMAND_STATUS;
 

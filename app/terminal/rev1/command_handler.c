@@ -60,6 +60,12 @@ static inline bool is_subcommand_required
     COMMAND_CODE command
     );
 
+/* Converts a flash memory address in byte format to uint32_t format */
+static inline uint32_t flash_bytes_to_address 
+	(
+	uint8_t address_bytes[3]
+	);
+
 
 /*------------------------------------------------------------------------------
  Procedures 
@@ -245,202 +251,166 @@ COMMAND_STATUS flash_cmd_handler
 /*------------------------------------------------------------------------------
  Local Variables 
 ------------------------------------------------------------------------------*/
-uint8_t          num_bytes;           /* Number of bytes on which to 
-                                         operate                              */
-uint8_t          address[3];          /* flash address in byte form           */
-uint8_t*         pbuffer;             /* Position within flash buffer         */
-uint8_t          buffer[512];         /* buffer (flash extract)               */
-FLASH_STATUS     flash_status;        /* Return value of flash API calls      */
-USB_STATUS       usb_status;          /* Return value of USB API calls        */
+FLASH_BUFFER flash_buffer;      /* Buffer to use with flash read/write calls  */
+uint8_t      address_bytes[3];  /* flash address in byte form                 */
+uint8_t      buffer[512];       /* buffer (flash extract)                     */
+uint8_t      status_reg;        /* Flash status register contents             */
+FLASH_STATUS flash_status;      /* Return value of flash API calls            */
+USB_STATUS   usb_status;        /* Return value of USB API calls              */
 
 
 /*------------------------------------------------------------------------------
  Pre-processing 
 ------------------------------------------------------------------------------*/
-num_bytes                  = 0;
-pflash_handle -> num_bytes = num_bytes;
-pbuffer                    = &buffer[0];
-memset( pbuffer, 0, sizeof( buffer ) );
-address_to_bytes( pflash_handle -> address, &address[0] );
+flash_buffer.buffer_size = 0;
+flash_buffer.address     = 0;
+flash_buffer.buffer_ptr  = buffer;
+status_reg               = FLASH_STATUS_REG_RESET_VAL;
+usb_status               = USB_OK;
+memset( buffer       , 0     , sizeof( buffer        ) );
+memset( address_bytes, 0     , sizeof( address_bytes ) );
 
 
 /*------------------------------------------------------------------------------
- Call API function 
+ Implementation  
 ------------------------------------------------------------------------------*/
+
+/* Get flash address, data size, and data from serial port */
+if ( ( subcommand == FLASH_READ_SUBCOMMAND  ) || 
+     ( subcommand == FLASH_WRITE_SUBCOMMAND ) )
+    {
+    usb_status = usb_receive( &( address_bytes[0] )  , 
+                              sizeof( address_bytes ),
+                              USB_DEFAULT_TIMEOUT );
+    if ( usb_status != USB_OK )
+        {
+        return COMMAND_USB_ERROR;
+        }
+    flash_buffer.address = flash_bytes_to_address( address_bytes );
+
+    usb_status = usb_receive( &( flash_buffer.buffer_size ), 
+                              sizeof( uint8_t )            , 
+                              USB_DEFAULT_TIMEOUT );
+    if ( usb_status != USB_OK )
+        {
+        return COMMAND_USB_ERROR;
+        }
+
+    if ( subcommand == FLASH_WRITE_SUBCOMMAND )
+        {
+        usb_status = usb_recieve( flash_buffer.buffer_ptr , 
+                                  flash_buffer.buffer_size, 
+                                  flash_buffer.buffer_size*USB_DEFAULT_TIMEOUT );
+        if ( usb_status != USB_OK )
+            {
+            return COMMAND_USB_ERROR;
+            }
+        }
+    }
+
+/* Execute command */
 switch ( subcommand )
 	{
-    /*-----------------------------READ Subcommand----------------------------*/
+    /*-------------------------------READ Subcommand------------------------------*/
     case FLASH_READ_SUBCOMMAND:
         {
+        if ( flash_read( flash_buffer ) != FLASH_OK )
+            {
+            return COMMAND_FLASH_READ_ERROR;
+            }
 
-		/* Get flash address and number of bytes to read */
-		usb_status = usb_receive( &( address[0] )  , 
-                                  sizeof( address ), 
-                                  USB_DEFAULT_TIMEOUT );
-		if ( usb_status != USB_OK )
-			{
-			return COMMAND_USB_ERROR;
-			}
-        usb_status = usb_receive( &num_bytes, 
-                                  sizeof( num_bytes ), 
-                                  USB_DEFAULT_TIMEOUT );
+        usb_status = usb_transmit( &buffer[0]              , 
+                                   flash_buffer.buffer_size, 
+                                   flash_buffer.buffer_size*USB_DEFAULT_TIMEOUT );
         if ( usb_status != USB_OK )
             {
             return COMMAND_USB_ERROR;
             }
 
-        /* Read memory */
-        pflash_handle -> address = bytes_to_address( address );
-        flash_status = flash_read( pflash_handle, num_bytes );
-        
-        /* Check for flash error */
-        if ( flash_status != FLASH_OK )
-            {
-            /* Bytes not read */
-            return FLASH_FAIL;
-            }
-
-        /* Transmit bytes from pbuffer over USB */
-        usb_status = usb_transmit( pflash_handle -> pbuffer,
-                                    num_bytes               ,
-                                    HAL_FLASH_TIMEOUT );
-
-        if ( usb_status != USB_OK )
-            {
-            /* Bytes not transimitted */
-            return FLASH_USB_ERROR;
-            }
-
-		/* Bytes read and transimitted back sucessfully */
-		return FLASH_OK;
-
-		} /* FLASH_SUBCMD_READ */
+		return COMMAND_OK;
+		} /* FLASH_READ_SUBCOMMAND */
 
     /*------------------------------ENABLE Subcommand-----------------------------*/
     case FLASH_ENABLE_SUBCOMMAND:
         {
 		flash_write_enable();
-		return FLASH_OK;
-        } /* FLASH_SUBCMD_ENABLE */
+		return COMMAND_OK;
+        } /* FLASH_ENABLE_SUBCOMMAND */
 
     /*------------------------------DISABLE Subcommand----------------------------*/
     case FLASH_DISABLE_SUBCOMMAND:
         {
 		flash_write_disable();
-		return FLASH_OK;
-        } /* FLASH_SUBCMD_DISABLE */
+		return COMMAND_OK;
+        } /* FLASH_DISABLE_SUBCOMMAND */
 
     /*------------------------------WRITE Subcommand------------------------------*/
     case FLASH_WRITE_SUBCOMMAND:
         {
-		/* Get Address bits */
-		usb_status = usb_receive( &( address[0] )  ,
-                                  sizeof( address ),
-                                  HAL_DEFAULT_TIMEOUT );
-
-		if ( usb_status != USB_OK )	
-			{
-			/* Address not recieved */
-			return FLASH_USB_ERROR;
+        if ( flash_write( flash_buffer ) != FLASH_OK )
+            {
+            return COMMAND_FLASH_WRITE_ERROR;
             }
-		else
-			{
-			/* Convert flash address to uint32_t */
-			pflash_handle -> address = bytes_to_address( address );
-
-			/* Get bytes to be written to flash */
-			for ( int i = 0; i < num_bytes; i++ )
-				{
-				pbuffer = ( pflash_handle -> pbuffer ) + i;
-				flash_status = usb_receive( pbuffer          , 
-                                            sizeof( uint8_t ),
-                                            HAL_DEFAULT_TIMEOUT );
-
-				/* Return if usb call failed */
-				if ( usb_status != USB_OK )
-					{
-					/* Bytes not received */
-				    return FLASH_USB_ERROR;	
-                    }
-
-				}
-            }
-
-		/* Call API function */
-		flash_status = flash_write( pflash_handle );
-
-	    return flash_status;	
-        } /* FLASH_SUBCMD_WRITE */
+	    return COMMAND_OK;	
+        } /* FLASH_WRITE_SUBCOMMAND */
 
     /*------------------------------ERASE Subcommand------------------------------*/
     case FLASH_ERASE_SUBCOMMAND:
         {
-		/* Call API Function*/
-		flash_status = flash_erase( pflash_handle );
-
-		return flash_status;
-        } /* FLASH_SUBCMD_ERASE */
+        if ( flash_erase() != FLASH_OK )
+            {
+            return COMMAND_FLASH_ERROR;
+            }
+		return COMMAND_OK;
+        } /* FLASH_ERASE_SUBCOMMAND */
 
     /*------------------------------STATUS Subcommand-----------------------------*/
     case FLASH_STATUS_SUBCOMMAND:
         {
-		/* Call API function */
-		flash_status = flash_get_status( pflash_handle );
-
-		/* Send status register contents back to PC */
-		usb_status = usb_transmit( &( pflash_handle -> status_register ),
-                                   sizeof( uint8_t )                    ,
-                                   HAL_DEFAULT_TIMEOUT );
-
-		/* Return status code */
-		if      ( usb_status   != USB_OK   )
+        if ( flash_get_status( &status_reg ) != FLASH_OK )
+            {
+            return COMMAND_FLASH_ERROR;
+            }
+		usb_status = usb_transmit( &status_reg, sizeof( status_reg ), USB_DEFAULT_TIMEOUT );
+		if ( usb_status   != USB_OK   )
 			{
-			return FLASH_USB_ERROR;
+			return COMMAND_USB_ERROR;
 			}
-		else if ( flash_status != FLASH_OK )
-			{
-			return FLASH_SPI_ERROR;
-			}
-		else
-			{
-			return FLASH_OK;	
-			}
-        } /* FLASH_SUBCMD_STATUS */
+        return COMMAND_OK;
+        } /*  FLASH_STATUS_SUBCOMMAND */
 
     /*-----------------------------EXTRACT Subcommand-----------------------------*/
     case FLASH_EXTRACT_SUBCOMMAND:
         {
-		/* Extracts the entire flash chip, flash chip address from 0 to 0x7FFFF */
-		pflash_handle->pbuffer = &buffer[0];
-		pflash_handle->address = 0;
-		while( pflash_handle->address <= FLASH_MAX_ADDR )
-			{
-			flash_status = flash_read( pflash_handle, sizeof( buffer ) );
-			if( flash_status == FLASH_OK )
-				{
-				usb_transmit( &buffer, sizeof( buffer ), HAL_FLASH_TIMEOUT );
-				}
-			else
-				{
-				/* Extract Failed */
-				return FLASH_EXTRACT_ERROR;
-				}
+        flash_buffer.address     = 0;
+        flash_buffer.buffer_size = sizeof( buffer );
+        while ( flash_buffer.buffer_size <= FLASH_MAX_ADDR )
+            {
+            if ( flash_read( flash_buffer ) != FLASH_OK )
+                {
+                return COMMAND_FLASH_ERROR;
+                }
 
-			/* Read from next address */
-			(pflash_handle->address) += sizeof( buffer ) ;
-			}
+            usb_status = usb_transmit( &buffer[0], sizeof( buffer ), HAL_FLASH_TIMEOUT );
+            if ( usb_status != USB_OK )
+                {
+                return COMMAND_USB_ERROR;
+                }
+            
+            flash_buffer.address == sizeof( buffer );
+            }
 
-		return FLASH_OK;
-        } /* FLASH_SUBCMD_EXTRACT */
+		return COMMAND_OK;
+        } /* FLASH_EXTRACT_SUBCOMMAND */
 
     /*---------------------------Unrecognized Subcommand--------------------------*/
 	default:
         {
-	    return FLASH_UNRECOGNIZED_OP;	
+	    return COMMAND_UNRECOGNIZED_SUBCOMMAND;	
         }
 
     }
-} /* flash_cmd_execute */
+} /* flash_cmd_handler */
 
 
 /*------------------------------------------------------------------------------
@@ -456,6 +426,26 @@ static inline bool is_subcommand_required
 {
 return subcommand_commands[command];
 } /* is_subcommand_required */
+
+
+/*******************************************************************************
+*                                                                              *
+* PROCEDURE:                                                                   * 
+* 		flash_bytes_to_address                                                 *
+*                                                                              *
+* DESCRIPTION:                                                                 * 
+* 		Converts a flash memory address in byte format to uint32_t format      *
+*                                                                              *
+*******************************************************************************/
+static inline uint32_t flash_bytes_to_address 
+	(
+	uint8_t address_bytes[3]
+	)
+{
+return ( (uint32_t) address_bytes[0] << 16 ) |
+	   ( (uint32_t) address_bytes[1] << 8  ) |
+	   ( (uint32_t) address_bytes[2] << 0  );
+} /*  flash_bytes_to_address */
 
 
 
