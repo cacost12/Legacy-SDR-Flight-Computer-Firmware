@@ -62,17 +62,22 @@ typedef enum FLASH_SUBCOMMAND
  Function Prototypes 
 ------------------------------------------------------------------------------*/
 
-/* Processes commands and calls appropriate subroutines */
+/* Parses and executes board-level commands */
 COMMAND_STATUS command_handler 
     (
     COMMAND_CODE command
     );
 
-/* Receives an ignition subcommand over the serial port and calls the 
-   appropriate driver function */
+/* Parses and executes ignition module subcommands */
 COMMAND_STATUS ign_cmd_handler
 	(
-    void
+    IGN_SUBCOMMAND subcommand 
+    );
+
+/* Parses and executes flash module subcommands */
+COMMAND_STATUS flash_cmd_handler
+	(
+    FLASH_SUBCOMMAND subcommand   
     );
 
 

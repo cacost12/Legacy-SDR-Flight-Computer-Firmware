@@ -166,8 +166,7 @@ return COMMAND_UNKNOWN_ERROR;
 * 		ign_cmd_handler                                                        *
 *                                                                              *
 * DESCRIPTION:                                                                 *
-* 		Receives an ignition subcommand over the serial port and calls the     *
-*       appropriate driver function                                            *
+*       Parses and executes ignition module subcommands                        *
 *                                                                              *
 *******************************************************************************/
 COMMAND_STATUS ign_cmd_handler
@@ -240,7 +239,7 @@ else
 * 		flash_cmd_handler                                                      *
 *                                                                              *
 * DESCRIPTION:                                                                 *
-* 		Executes a flash subcommand based on input from the sdec terminal      *
+*       Parses and executes flash module subcommands                           *
 *                                                                              *
 *******************************************************************************/
 COMMAND_STATUS flash_cmd_handler
