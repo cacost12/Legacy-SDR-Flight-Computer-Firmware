@@ -23,9 +23,13 @@ extern "C" {
 
 /* Board identifier code */
 #if   defined( A0001_REV1 )
-	#define BOARD_ID    ( 0x01 )
+	#define BOARD_ID    ( 0x01 )   /* Base flight computer       */
 #elif defined( A0002_REV1 )
-	#define BOARD_ID    ( 0x02 )
+	#define BOARD_ID    ( 0x02 )   /* Full flight computer       */
+#elif defined( A0003_REV1 )
+    #define BOARD_ID    ( 0x03 )  /* Legacy flight computer      */
+#elif defined( A0004_REV1 )
+    #define BOARD_ID    ( 0x04 )  /* Legacy flight computer lite */
 #endif
 
 /* Firmware Identifier Code */

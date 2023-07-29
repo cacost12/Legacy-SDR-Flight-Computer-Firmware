@@ -37,7 +37,7 @@ typedef enum _COMMAND_CODE
 #define SUBCOMMAND_NOT_REQUIRED    false
 
 /* Ignition system command interface subcommand codes */
-typedef enum IGN_SUBCOMMAND
+typedef enum _IGN_SUBCOMMAND
 	{
 	IGN_MAIN_DEPLOY_SUBCOMMAND = 0x01,
 	IGN_DROGUE_DEPLOY_SUBCOMMAND     ,
@@ -46,7 +46,7 @@ typedef enum IGN_SUBCOMMAND
 	} IGN_SUBCOMMAND;
 
 /* Flash command interface subcommand codes */
-typedef enum FLASH_SUBCOMMAND
+typedef enum _FLASH_SUBCOMMAND
     {
 	FLASH_READ_SUBCOMMAND = 0,
 	FLASH_ENABLE_SUBCOMMAND  ,
@@ -56,6 +56,14 @@ typedef enum FLASH_SUBCOMMAND
 	FLASH_STATUS_SUBCOMMAND  ,
 	FLASH_EXTRACT_SUBCOMMAND 
     } FLASH_SUBCOMMAND;
+
+/* Sensor command interface subcommand codes */
+typedef enum _SENSOR_SUBCOMMAND 
+    {
+    SENSOR_DUMP_SUBCOMMAND = 0x01,
+    SENSOR_POLL_SUBCOMMAND       ,
+    SENSOR_NONE_SUBCOMMAND
+    } SENSOR_SUBCOMMAND;
 
 
 /*------------------------------------------------------------------------------
@@ -78,6 +86,12 @@ COMMAND_STATUS ign_cmd_handler
 COMMAND_STATUS flash_cmd_handler
 	(
     FLASH_SUBCOMMAND subcommand   
+    );
+
+/* Parses and executes sensor module subcommands */
+COMMAND_STATUS sensor_cmd_handler 
+	(
+    SENSOR_SUBCOMMAND subcommand 
     );
 
 
