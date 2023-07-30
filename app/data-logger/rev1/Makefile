@@ -46,6 +46,8 @@ UTIL_DIR = $(LIB_DIR)/util
 # C sources
 C_SOURCES =                                                           \
 main.c                                                                \
+../../terminal/rev1/command_handler.c                                 \
+../../terminal/rev1/commands.c                                        \
 $(INIT_DIR)/init.c                                                    \
 $(UTIL_DIR)/zav_error.c                                               \
 $(MOD_DIR)/baro/baro.c                                                \
@@ -141,6 +143,7 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =                                           \
 -I.                                                    \
+-I../../terminal/rev1                                  \
 -I$(LIB_DIR)                                           \
 -I$(INIT_DIR)                                          \
 -I$(UTIL_DIR)                                          \
@@ -150,6 +153,7 @@ C_INCLUDES =                                           \
 -I$(MOD_DIR)/ignition                                  \
 -I$(MOD_DIR)/imu                                       \
 -I$(MOD_DIR)/led                                       \
+-I$(MOD_DIR)/sensor                                    \
 -I$(MOD_DIR)/usb                                       \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \

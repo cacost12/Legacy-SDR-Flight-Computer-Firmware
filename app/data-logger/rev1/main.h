@@ -52,9 +52,17 @@ extern "C" {
 
 /* Sensor Data Frame Size */
 #if   defined( FULL_FLIGHT_COMPUTER )
-	#define SENSOR_FRAME_SIZE      ( 32 ) 
+	#define SENSOR_FRAME_SIZE      ( 36 ) 
+
 #elif defined( BASE_FLIGHT_COMPUTER )
+	#define SENSOR_FRAME_SIZE      ( 16 )
+
+#elif defined( LEGACY_FLIGHT_COMPUTER )
+	#define SENSOR_FRAME_SIZE      ( 32 )
+
+#elif defined( LEGACY_FLIGHT_COMPUTER_LITE )
 	#define SENSOR_FRAME_SIZE      ( 12 )
+
 #endif
 
 /* Launch detection parameters */
@@ -67,14 +75,12 @@ extern "C" {
 ------------------------------------------------------------------------------*/
 
 /* Store a frame of flight computer data in flash */
-/*
 FLASH_STATUS store_frame 
 	(
-	HFLASH_BUFFER* pflash_handle,
-	SENSOR_DATA*   sensor_data_ptr,
-	uint32_t       time
+	FLASH_BUFFER  flash_handle   ,
+	SENSOR_DATA*  sensor_data_ptr,
+	uint32_t      time
 	);
-*/
 
 
 #ifdef __cplusplus
