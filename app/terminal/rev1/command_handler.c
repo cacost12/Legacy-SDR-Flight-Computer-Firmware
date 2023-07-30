@@ -18,12 +18,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-/* General */
-#include "command_handler.h"
-#include "commands.h"
-#include "sensor.h"
-#include "zav_error.h"
-
 /* Hardware Modules */
 #include "baro.h"
 #include "buzzer.h"
@@ -32,6 +26,12 @@
 #include "imu.h"
 #include "led.h"
 #include "usb.h"
+
+/* General */
+#include "commands.h"
+#include "command_handler.h"
+#include "sensor.h"
+#include "zav_error.h"
 
 
 /*------------------------------------------------------------------------------
@@ -76,7 +76,6 @@ void static extract_sensor_bytes
 	uint8_t*     num_sensor_bytes
 	);
 
-
 /*------------------------------------------------------------------------------
  Procedures 
 ------------------------------------------------------------------------------*/
@@ -107,7 +106,7 @@ USB_STATUS usb_status;    /* Return codes from USB interface    */
  Initializations 
 ------------------------------------------------------------------------------*/
 subcommand = 0;
-USB_STATUS = USB_OK;
+usb_status = USB_OK;
 
 
 /*------------------------------------------------------------------------------
@@ -117,7 +116,7 @@ USB_STATUS = USB_OK;
 /* Get Subcommand */
 if ( is_subcommand_required( command ) == SUBCOMMAND_REQUIRED )
     {
-    usb_status = usb_receieve( &subcommand, sizeof( subcommand ), USB_DEFAULT_TIMEOUT );
+    usb_status = usb_receive( &subcommand, sizeof( subcommand ), USB_DEFAULT_TIMEOUT );
     if ( usb_status != USB_OK )
         {
         return COMMAND_USB_ERROR;
@@ -148,7 +147,7 @@ switch( command )
     /*---------------------------- Ignite Command ----------------------------*/
     case COMMAND_IGNITE_CODE:
         {
-        return ignite_cmd_handler( subcommand );
+        return ign_cmd_handler( subcommand );
         } /* IGNITE_OP */
 
     /*---------------------------- Flash Command ------------------------------*/
@@ -264,7 +263,6 @@ FLASH_BUFFER flash_buffer;      /* Buffer to use with flash read/write calls  */
 uint8_t      address_bytes[3];  /* flash address in byte form                 */
 uint8_t      buffer[512];       /* buffer (flash extract)                     */
 uint8_t      status_reg;        /* Flash status register contents             */
-FLASH_STATUS flash_status;      /* Return value of flash API calls            */
 USB_STATUS   usb_status;        /* Return value of USB API calls              */
 
 
@@ -307,7 +305,7 @@ if ( ( subcommand == FLASH_READ_SUBCOMMAND  ) ||
 
     if ( subcommand == FLASH_WRITE_SUBCOMMAND )
         {
-        usb_status = usb_recieve( flash_buffer.buffer_ptr , 
+        usb_status = usb_receive( flash_buffer.buffer_ptr , 
                                   flash_buffer.buffer_size, 
                                   flash_buffer.buffer_size*USB_DEFAULT_TIMEOUT );
         if ( usb_status != USB_OK )
@@ -406,7 +404,7 @@ switch ( subcommand )
                 return COMMAND_USB_ERROR;
                 }
             
-            flash_buffer.address == sizeof( buffer );
+            flash_buffer.address += sizeof( buffer );
             }
 
 		return COMMAND_OK;
@@ -477,7 +475,7 @@ switch ( subcommand )
 	/*--------------------------------------------------------------------------
 	 SENSOR POLL 
 	--------------------------------------------------------------------------*/
-    case SENSOR_POLL_CODE:
+    case SENSOR_POLL_SUBCOMMAND:
 		{
 		/* Determine the which sensors to poll */
         usb_status = usb_receive( &num_sensors         , 
@@ -592,7 +590,7 @@ switch ( subcommand )
 	/*--------------------------------------------------------------------------
 	 SENSOR DUMP 
 	--------------------------------------------------------------------------*/
-	case SENSOR_DUMP_CODE: 
+	case SENSOR_DUMP_SUBCOMMAND: 
 		{
 		/* Tell the PC how many bytes to expect */
         usb_transmit( &num_sensor_bytes,
@@ -716,7 +714,7 @@ for ( uint8_t i = 0; i < num_sensors; ++i )
 	/* Get position info of sensor readout */
 	sensor_map( sensor_data_ptr, 
 	            sensor_id      ,
-				&input_ptr      ,
+				&input_ptr     ,
 				&sensor_size );
 
 	/* Copy data into output buffer */

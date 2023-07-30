@@ -1,7 +1,7 @@
 /*******************************************************************************
 *
 * FILE: 
-* 		main.c
+* 		main.h
 *
 * DESCRIPTION: 
 * 		Processes commands recieved from a host PC, provides fine control over 
@@ -33,7 +33,7 @@ Macros
 #define DEF_FLASH_BUFFER_SIZE  ( 32  )     /* Default size of flash buffers   */
 
 /* Timeouts */
-#ifndef SDR_DEBUG
+#ifndef ZAV_DEBUG
 	#define HAL_DEFAULT_TIMEOUT    ( 10  ) /* Default timeout for polling 
 											   operations                     */
 	#define HAL_SENSOR_TIMEOUT     ( 40  ) /* Timeout for sensor polling      */
@@ -48,10 +48,10 @@ Macros
  Exported functions prototypes                                             
 ------------------------------------------------------------------------------*/
 
-void HAL_TIM_MspPostInit
-	(
-	TIM_HandleTypeDef *htim
-	);
+//void HAL_TIM_MspPostInit
+//	(
+//	TIM_HandleTypeDef *htim
+//	);
 
 
 #ifdef __cplusplus

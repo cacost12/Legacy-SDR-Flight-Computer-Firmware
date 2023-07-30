@@ -33,7 +33,7 @@ LIB_DIR = ../../../lib
 MOD_DIR = ../../../mod
 
 # MCU Init Code Directory
-INIT_DIR = ../../../init/terminal
+INIT_DIR = ../../../init
 
 # Utilities directory
 UTIL_DIR = $(LIB_DIR)/util
@@ -46,11 +46,11 @@ UTIL_DIR = $(LIB_DIR)/util
 # C sources
 C_SOURCES =                                                           \
 main.c                                                                \
+command_handler.c                                                     \
+commands.c                                                            \
 $(INIT_DIR)/init.c                                                    \
-$(UTIL_DIR)/sdr_error.c                                               \
+$(UTIL_DIR)/zav_error.c                                               \
 $(MOD_DIR)/baro/baro.c                                                \
-$(MOD_DIR)/buzzer/buzzer.c                                            \
-$(MOD_DIR)/commands/commands.c                                        \
 $(MOD_DIR)/flash/flash.c                                              \
 $(MOD_DIR)/ignition/ignition.c                                        \
 $(MOD_DIR)/imu/imu.c                                                  \
@@ -81,19 +81,7 @@ $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c    \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c      \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c   \
 $(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c       \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c    \
-$(LIB_DIR)/FATFS/App/fatfs.c                                          \
-$(LIB_DIR)/FATFS/Target/bsp_driver_sd.c                               \
-$(LIB_DIR)/FATFS/Target/sd_diskio.c                                   \
-$(LIB_DIR)/FATFS/Target/fatfs_platform.c                              \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_sdmmc.c      \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_delayblock.c \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd.c        \
-$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd_ex.c     \
-$(LIB_DIR)/Middlewares/Third_Party/FatFs/src/diskio.c                 \
-$(LIB_DIR)/Middlewares/Third_Party/FatFs/src/ff.c                     \
-$(LIB_DIR)/Middlewares/Third_Party/FatFs/src/ff_gen_drv.c             \
-$(LIB_DIR)/Middlewares/Third_Party/FatFs/src/option/syscall.c
+$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c    
 
 # ASM sources
 ASM_SOURCES =  \
@@ -143,11 +131,11 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 AS_DEFS = 
 
 # C defines
-C_DEFS =          \
--DUSE_HAL_DRIVER  \
--DSTM32H750xx     \
--DFLIGHT_COMPUTER \
--DA0002_REV2      \
+C_DEFS =               \
+-DUSE_HAL_DRIVER       \
+-DSTM32H750xx          \
+-DFULL_FLIGHT_COMPUTER \
+-DA0002_REV1           \
 -DTERMINAL       
 
 
@@ -163,7 +151,6 @@ C_INCLUDES =                                           \
 -I$(INIT_DIR)/config/Inc                               \
 -I$(MOD_DIR)/baro                                      \
 -I$(MOD_DIR)/buzzer                                    \
--I$(MOD_DIR)/commands                                  \
 -I$(MOD_DIR)/flash                                     \
 -I$(MOD_DIR)/ignition                                  \
 -I$(MOD_DIR)/imu                                       \
@@ -173,10 +160,7 @@ C_INCLUDES =                                           \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \
--I$(LIB_DIR)/Drivers/CMSIS/Include                     \
--I$(LIB_DIR)/FATFS/Target                              \
--I$(LIB_DIR)/FATFS/App                                 \
--I$(LIB_DIR)/Middlewares/Third_Party/FatFs/src
+-I$(LIB_DIR)/Drivers/CMSIS/Include
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
