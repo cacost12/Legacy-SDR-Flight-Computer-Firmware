@@ -41,17 +41,7 @@ Macros
 	/* Disable timeouts when debugging */
 	#define HAL_DEFAULT_TIMEOUT    ( 0xFFFFFFFF )  
 	#define HAL_SENSOR_TIMEOUT     ( 0xFFFFFFFF ) 
-#endif /* SDR_DEBUG */
-
-
-/*------------------------------------------------------------------------------
- Exported functions prototypes                                             
-------------------------------------------------------------------------------*/
-
-//void HAL_TIM_MspPostInit
-//	(
-//	TIM_HandleTypeDef *htim
-//	);
+#endif /* ZAV_DEBUG */
 
 
 #ifdef __cplusplus

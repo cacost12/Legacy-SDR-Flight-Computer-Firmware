@@ -47,7 +47,6 @@
 I2C_HandleTypeDef  baro_hi2c;   /* Baro sensor    */
 I2C_HandleTypeDef  imu_hi2c;    /* IMU and GPS    */
 SPI_HandleTypeDef  flash_hspi;  /* External flash */
-//TIM_HandleTypeDef  htim4;   /* Buzzer Timer   */
 UART_HandleTypeDef usb_huart;   /* USB            */
 
 
@@ -81,7 +80,6 @@ USB_UART_Init           (); /* USB UART                                       */
 Baro_I2C_Init           (); /* Barometric pressure sensor                     */
 IMU_I2C_Init            (); /* IMU and GPS                                    */
 Flash_SPI_Init          (); /* External flash chip                            */
-//BUZZER_TIM_Init         (); /* Buzzer                                         */
 
 
 /*------------------------------------------------------------------------------
