@@ -14,7 +14,7 @@
  Standard Includes                                                                     
 ------------------------------------------------------------------------------*/
 #include <stdbool.h>
-#include "zav_pin_defines_A0002.h"
+#include "zav_pin_defines_A0003.h"
 #include "zav_error.h"
 
 
