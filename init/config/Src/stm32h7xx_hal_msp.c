@@ -76,7 +76,6 @@ if( hi2c->Instance == BARO_I2C )
     __HAL_RCC_I2C1_CLK_ENABLE();
     }
 
-#ifdef FULL_FLIGHT_COMPUTER
 /* IMU I2C */
 else if( hi2c->Instance == IMU_I2C )
     {
@@ -95,7 +94,6 @@ else if( hi2c->Instance == IMU_I2C )
     /* Peripheral clock enable */
     __HAL_RCC_I2C2_CLK_ENABLE();
     }
-#endif /* #ifdef FULL_FLIGHT_COMPUTER */
 
 } /* HAL_I2C_MspInit */
 
@@ -128,7 +126,6 @@ if( hi2c->Instance == BARO_I2C )
     HAL_GPIO_DeInit( BARO_SDA_GPIO_PORT, BARO_SDA_PIN );
     }
 
-#ifdef FULL_FLIGHT_COMPUTER
 /* IMU I2C */
 else if( hi2c->Instance == IMU_I2C )
     {
@@ -141,7 +138,6 @@ else if( hi2c->Instance == IMU_I2C )
     HAL_GPIO_DeInit( IMU_SCL_GPIO_PORT, IMU_SCL_PIN );
     HAL_GPIO_DeInit( IMU_SDA_GPIO_PORT, IMU_SDA_PIN );
     }
-#endif /* #ifdef FULL_FLIGHT_COMPUTER */
 
 } /* HAL_I2C_MspDeInit */
 
@@ -161,19 +157,10 @@ void HAL_SPI_MspInit
     )
 {
 GPIO_InitTypeDef         GPIO_InitStruct     = {0};
-RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
 /* Flash SPI */
 if( hspi->Instance == FLASH_SPI )
     {
-    /* Initializes the peripherals clock */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
-    PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
-    if ( HAL_RCCEx_PeriphCLKConfig( &PeriphClkInitStruct ) != HAL_OK )
-        {
-        Error_Handler( ERROR_SPI_HAL_MSP_ERROR );
-        }
-
     /* Peripheral clock enable */
     __HAL_RCC_SPI2_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -244,27 +231,10 @@ void HAL_UART_MspInit
     )
 {
 GPIO_InitTypeDef         GPIO_InitStruct     = {0};
-RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
 /* USB UART */
 if( huart->Instance == USB_UART )
     {
-    /* Initializes the peripherals clock */
-    PeriphClkInitStruct.PeriphClockSelection  = RCC_PERIPHCLK_USART6;
-    PeriphClkInitStruct.PLL2.PLL2M            = 2;
-    PeriphClkInitStruct.PLL2.PLL2N            = 16;
-    PeriphClkInitStruct.PLL2.PLL2P            = 2;
-    PeriphClkInitStruct.PLL2.PLL2Q            = 4;
-    PeriphClkInitStruct.PLL2.PLL2R            = 2;
-    PeriphClkInitStruct.PLL2.PLL2RGE          = RCC_PLL2VCIRANGE_3;
-    PeriphClkInitStruct.PLL2.PLL2VCOSEL       = RCC_PLL2VCOWIDE;
-    PeriphClkInitStruct.PLL2.PLL2FRACN        = 0;
-    PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_PLL2;
-    if ( HAL_RCCEx_PeriphCLKConfig( &PeriphClkInitStruct ) != HAL_OK )
-        {
-        Error_Handler( ERROR_UART_HAL_MSP_ERROR );
-        }
-
     /* Peripheral clock enable */
     __HAL_RCC_USART6_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
