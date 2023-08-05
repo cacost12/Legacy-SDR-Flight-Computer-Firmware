@@ -515,7 +515,7 @@ switch ( subcommand )
 			/* Get command code */
             usb_status = usb_receive( &sensor_poll_cmd         ,
                                       sizeof( sensor_poll_cmd ),
-                                      USB_DEFAULT_TIMEOUT );
+                                      SENSOR_POLL_CMD_TIMEOUT );
             if ( usb_status != USB_OK ) 
                 {
                 return COMMAND_USB_ERROR;
@@ -553,7 +553,7 @@ switch ( subcommand )
 						}
 					} /* case SENSOR_POLL_REQUEST */
 
-				/* STOP Executtion */
+				/* STOP Execution */
 				case SENSOR_POLL_STOP:
 					{
 					/* Do nothing */
@@ -569,7 +569,7 @@ switch ( subcommand )
                         usb_status = usb_receive( &sensor_poll_cmd         , 
                                                   sizeof( sensor_poll_cmd ),
                                                   USB_DEFAULT_TIMEOUT );
-                        if ( usb_status != USB_OK )
+                        if ( ( usb_status != USB_OK ) && ( usb_status != USB_TIMEOUT ) )
                             {
                             return COMMAND_USB_ERROR;
                             }

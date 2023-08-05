@@ -65,6 +65,13 @@ typedef enum _SENSOR_SUBCOMMAND
     SENSOR_NONE_SUBCOMMAND
     } SENSOR_SUBCOMMAND;
 
+/* Timeouts */
+#ifndef ZAV_DEBUG
+    #define SENSOR_POLL_CMD_TIMEOUT    ( 1000       )
+#else
+    #define SENSOR_POLL_CMD_TIMEOUT    ( 0xFFFFFFFF )
+#endif
+
 
 /*------------------------------------------------------------------------------
  Function Prototypes 
