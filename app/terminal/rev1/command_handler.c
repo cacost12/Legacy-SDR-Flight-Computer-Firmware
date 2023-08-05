@@ -230,8 +230,6 @@ switch( subcommand )
 		}
     } 
 
-/* Send return code to PC */
-usb_transmit( &ign_status, sizeof( ign_status ), USB_DEFAULT_TIMEOUT );
 if ( ign_status != IGN_OK )
     {
     return COMMAND_IGN_ERROR;
