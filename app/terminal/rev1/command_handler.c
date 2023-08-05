@@ -213,6 +213,7 @@ switch( subcommand )
 	case IGN_DROGUE_DEPLOY_SUBCOMMAND:
 		{
 		ign_status = ign_deploy_drogue();
+        break;
 		}
 
 	case IGN_CONT_SUBCOMMAND:
@@ -220,6 +221,7 @@ switch( subcommand )
 		ign_cont_status = ign_get_cont_info();
         usb_transmit( &ign_cont_status, sizeof( ign_cont_status ), USB_DEFAULT_TIMEOUT );
         ign_status = IGN_OK;
+        break;
 		}
 
 	default:
