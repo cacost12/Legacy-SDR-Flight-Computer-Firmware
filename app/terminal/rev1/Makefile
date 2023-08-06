@@ -50,17 +50,17 @@ UTIL_DIR = $(LIB_DIR)/util
 # C sources
 C_SOURCES =                                                           \
 main.c                                                                \
-command_handler.c                                                     \
-commands.c                                                            \
+$(MOD_DIR)/command_handler/command_handler.c                          \
+$(MOD_DIR)/command_handler/commands.c                                 \
 $(INIT_DIR)/init.c                                                    \
 $(UTIL_DIR)/zav_error.c                                               \
-$(DRIVER_DIR)/baro/baro.c                                                \
-$(DRIVER_DIR)/flash/flash.c                                              \
-$(DRIVER_DIR)/ignition/ignition.c                                        \
-$(DRIVER_DIR)/imu/imu.c                                                  \
-$(DRIVER_DIR)/led/led.c                                                  \
+$(DRIVER_DIR)/baro/baro.c                                             \
+$(DRIVER_DIR)/flash/flash.c                                           \
+$(DRIVER_DIR)/ignition/ignition.c                                     \
+$(DRIVER_DIR)/imu/imu.c                                               \
+$(DRIVER_DIR)/led/led.c                                               \
 $(MOD_DIR)/sensor/sensor.c                                            \
-$(DRIVER_DIR)/usb/usb.c                                                  \
+$(DRIVER_DIR)/usb/usb.c                                               \
 $(INIT_DIR)/config/Src/stm32h7xx_it.c                                 \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                            \
 $(INIT_DIR)/config/Src/system_stm32h7xx.c                             \
@@ -149,18 +149,19 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =                                           \
 -I.                                                    \
+-I$(MOD_DIR)/command_handler                           \
 -I$(LIB_DIR)                                           \
 -I$(INIT_DIR)                                          \
 -I$(UTIL_DIR)                                          \
 -I$(INIT_DIR)/config/Inc                               \
--I$(DRIVER_DIR)/baro                                      \
--I$(DRIVER_DIR)/buzzer                                    \
--I$(DRIVER_DIR)/flash                                     \
--I$(DRIVER_DIR)/ignition                                  \
--I$(DRIVER_DIR)/imu                                       \
--I$(DRIVER_DIR)/led                                       \
+-I$(DRIVER_DIR)/baro                                   \
+-I$(DRIVER_DIR)/buzzer                                 \
+-I$(DRIVER_DIR)/flash                                  \
+-I$(DRIVER_DIR)/ignition                               \
+-I$(DRIVER_DIR)/imu                                    \
+-I$(DRIVER_DIR)/led                                    \
 -I$(MOD_DIR)/sensor                                    \
--I$(DRIVER_DIR)/usb                                       \
+-I$(DRIVER_DIR)/usb                                    \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \
