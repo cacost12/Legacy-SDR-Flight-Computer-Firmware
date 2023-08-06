@@ -393,7 +393,7 @@ switch ( subcommand )
         {
         flash_buffer.address     = 0;
         flash_buffer.buffer_size = sizeof( buffer );
-        while ( flash_buffer.buffer_size <= FLASH_MAX_ADDR )
+        while ( flash_buffer.address <= FLASH_MAX_ADDR )
             {
             if ( flash_read( flash_buffer ) != FLASH_OK )
                 {
