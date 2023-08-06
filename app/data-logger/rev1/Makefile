@@ -31,7 +31,7 @@ BUILD_DIR = build
 LIB_DIR = ../../../lib
 
 # Module Directory
-MOD_DIR = ../../../mod
+DRIVER_DIR = ../../../driver
 
 # MCU Initialization Directory
 INIT_DIR = ../../../init
@@ -50,12 +50,12 @@ main.c                                                                \
 ../../terminal/rev1/commands.c                                        \
 $(INIT_DIR)/init.c                                                    \
 $(UTIL_DIR)/zav_error.c                                               \
-$(MOD_DIR)/baro/baro.c                                                \
-$(MOD_DIR)/flash/flash.c                                              \
-$(MOD_DIR)/ignition/ignition.c                                        \
-$(MOD_DIR)/imu/imu.c                                                  \
-$(MOD_DIR)/led/led.c                                                  \
-$(MOD_DIR)/usb/usb.c                                                  \
+$(DRIVER_DIR)/baro/baro.c                                                \
+$(DRIVER_DIR)/flash/flash.c                                              \
+$(DRIVER_DIR)/ignition/ignition.c                                        \
+$(DRIVER_DIR)/imu/imu.c                                                  \
+$(DRIVER_DIR)/led/led.c                                                  \
+$(DRIVER_DIR)/usb/usb.c                                                  \
 $(INIT_DIR)/config/Src/stm32h7xx_it.c                                 \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                            \
 $(INIT_DIR)/config/Src/system_stm32h7xx.c                             \
@@ -148,13 +148,13 @@ C_INCLUDES =                                           \
 -I$(INIT_DIR)                                          \
 -I$(UTIL_DIR)                                          \
 -I$(INIT_DIR)/config/Inc                               \
--I$(MOD_DIR)/baro                                      \
--I$(MOD_DIR)/flash                                     \
--I$(MOD_DIR)/ignition                                  \
--I$(MOD_DIR)/imu                                       \
--I$(MOD_DIR)/led                                       \
--I$(MOD_DIR)/sensor                                    \
--I$(MOD_DIR)/usb                                       \
+-I$(DRIVER_DIR)/baro                                      \
+-I$(DRIVER_DIR)/flash                                     \
+-I$(DRIVER_DIR)/ignition                                  \
+-I$(DRIVER_DIR)/imu                                       \
+-I$(DRIVER_DIR)/led                                       \
+-I$(DRIVER_DIR)/sensor                                    \
+-I$(DRIVER_DIR)/usb                                       \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy   \
 -I$(LIB_DIR)/Drivers/CMSIS/Device/ST/STM32H7xx/Include \
