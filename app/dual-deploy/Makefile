@@ -31,8 +31,11 @@ BUILD_DIR = build
 # Library directory
 LIB_DIR = ../../../lib
 
-# Module Directory
+# Driver directory
 DRIVER_DIR = ../../../driver
+
+# Module directory
+MOD_DIR = ../../../mod
 
 # MCU Initialization Directory
 INIT_DIR = ../../../init/dual-deploy
@@ -59,7 +62,7 @@ $(DRIVER_DIR)/flash/flash.c                                              \
 $(DRIVER_DIR)/ignition/ignition.c                                        \
 $(DRIVER_DIR)/imu/imu.c                                                  \
 $(DRIVER_DIR)/led/led.c                                                  \
-$(DRIVER_DIR)/sensor/sensor.c                                            \
+$(MOD_DIR)/sensor/sensor.c                                            \
 $(DRIVER_DIR)/usb/usb.c                                                  \
 $(INIT_DIR)/config/Src/stm32h7xx_it.c                                 \
 $(INIT_DIR)/config/Src/stm32h7xx_hal_msp.c                            \
@@ -172,7 +175,7 @@ C_INCLUDES =                                           \
 -I$(DRIVER_DIR)/ignition                                  \
 -I$(DRIVER_DIR)/imu                                       \
 -I$(DRIVER_DIR)/led                                       \
--I$(DRIVER_DIR)/sensor                                    \
+-I$(MOD_DIR)/sensor                                    \
 -I$(DRIVER_DIR)/usb                                       \
 -I$(UTIL_DIR)                                          \
 -I$(LIB_DIR)/Drivers/STM32H7xx_HAL_Driver/Inc          \
